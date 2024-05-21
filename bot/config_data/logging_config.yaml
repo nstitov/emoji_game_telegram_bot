@@ -1,0 +1,83 @@
+version: 1
+disable_existing_loggers: True
+
+
+formatters:
+  default_formatter:
+    format: "[{asctime}] #{levelname:8} {filename}:{lineno} - {name} - {message}"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+    style: "{"
+
+
+filters:
+  info_filter:
+    (): bot.config_data.logging_services.InfoLogFilter
+
+
+handlers:
+  info_console_handler:
+    class: logging.StreamHandler
+    formatter: default_formatter
+    level: INFO
+    stream:  "ext://sys.stdout"
+
+  exception_console_handler:
+    class: logging.StreamHandler
+    formatter: default_formatter
+    level: WARNING
+    stream: "ext://sys.stderr"
+
+  info_file_handler:
+      class: bot.config_data.logging_services.LogRotatiingFileHandler
+      formatter: default_formatter
+      level: INFO
+      filename: Logs/info.log
+      when: midnight
+      utc: False
+      backupCount: 30
+      filters: [info_filter]
+
+  error_file_handler:
+      class: logging.FileHandler
+      formatter: default_formatter
+      level: WARNING
+      filename: Logs/error.log
+      mode: a
+
+
+loggers:
+  bot.database.db_models:
+    level: INFO
+    handlers: [info_file_handler, error_file_handler, exception_console_handler]
+
+  bot.database.db_requests:
+    level: INFO
+    handlers: [info_file_handler, error_file_handler, exception_console_handler]
+
+  bot.database.db_statistic_requests:
+    level: INFO
+    handlers: [info_file_handler, error_file_handler, exception_console_handler]
+
+  bot.handlers.command_handlers:
+    level: INFO
+    handlers: [info_file_handler, error_file_handler, exception_console_handler]
+
+  bot.handlers.transactions_handlers:
+    level: INFO
+    handlers: [info_file_handler, error_file_handler, exception_console_handler]
+
+  bot.handlers.change_transaction_handlers:
+    level: INFO
+    handlers: [info_file_handler, error_file_handler, exception_console_handler]
+
+  bot.handlers.statistic_handlers:
+    level: INFO
+    handlers: [info_file_handler, error_file_handler, exception_console_handler]
+
+  bot.handlers.ignore_handlers:
+    level: INFO
+    handlers: [info_file_handler, error_file_handler, exception_console_handler]
+
+  bot.__main__:
+    level: INFO
+    handlers: [info_file_handler, error_file_handler, exception_console_handler]
